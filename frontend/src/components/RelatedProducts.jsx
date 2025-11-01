@@ -27,7 +27,7 @@ RelatedProducts.propTypes = {
         </div>
         <div className='grid grid-cols-2 sm:grid-cols-4 md:grid-cols4 lg:grid-cols-5 gap-4 gap-y6'>
             {related.map((item,index)=>(
-                <ProductItem key={index} id={item._id} name={item.name} price={item.price} image={item.image}/>
+                <ProductItem key={index} id={item._id} name={item.name} price={item.price} image={item.image} quantity={item.quantity} />
             ))}
         </div>
     </div>

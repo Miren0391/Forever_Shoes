@@ -29,6 +29,7 @@ List.propTypes = {
     category: 'Men',
     bestseller: 'false',
     sizes: [],
+    quantity: '',
     existingImages: [] // Store existing images URLs
   });
   const [editImages, setEditImages] = useState({
@@ -108,6 +109,7 @@ List.propTypes = {
           name: productData.name,
           description: productData.description,
           price: productData.price.toString(),
+            quantity: productData.quantity ? productData.quantity.toString() : '0',
           category: productData.category,
           bestseller: productData.bestseller ? 'true' : 'false',
           sizes: sortSizes(productData.sizes || []),
@@ -150,6 +152,7 @@ List.propTypes = {
       formData.append('category', editForm.category);
       formData.append('bestseller', editForm.bestseller);
       formData.append('sizes', JSON.stringify(editForm.sizes));
+  formData.append('quantity', editForm.quantity);
 
       // Handle both existing and new images
       const existingImagesArray = [...editForm.existingImages];
@@ -200,6 +203,7 @@ List.propTypes = {
       category: 'Men',
       bestseller: 'false',
       sizes: [],
+      quantity: '',
       existingImages: []
     });
     setEditImages({
@@ -303,7 +307,10 @@ List.propTypes = {
                         {item.category}
                       </span>
                     </div>
-                  <span className="text-xl font-bold text-emerald-600">{currency}{item.price}</span>
+                    <div className="text-right">
+                      <div className="text-xl font-bold text-emerald-600">{currency}{item.price}</div>
+                      <div className="text-sm text-gray-600">Stock: {typeof item.quantity !== 'undefined' ? item.quantity : 'N/A'}</div>
+                    </div>
                 </div>
 
                 {/* Sizes */}
@@ -479,6 +486,19 @@ List.propTypes = {
                       type="Number" 
                       placeholder="99" 
                       required
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">Quantity (stock)</label>
+                  <div className="relative">
+                    <input
+                      onChange={(e) => setEditForm(prev => ({...prev, quantity: e.target.value}))}
+                      value={editForm.quantity}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      type="number"
+                      placeholder="0"
+                      min={0}
                     />
                   </div>
                 </div>

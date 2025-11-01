@@ -14,6 +14,7 @@ const Add = ({token}) => {
   const [name,setName] = useState('')
   const [description,setDescription] = useState('')
   const [price,setPrice] = useState('')
+  const [quantity,setQuantity] = useState('')
   const [category,setCategory] = useState('Men')
   const [bestseller,setBestseller] = useState('false')
   const [sizes,setSizes] = useState([])
@@ -26,6 +27,7 @@ const Add = ({token}) => {
       formData.append('name',name)
       formData.append('description',description)
       formData.append('price',price)
+  formData.append('quantity',quantity)
       formData.append('category',category)
       formData.append('bestseller',bestseller)
       formData.append('sizes',JSON.stringify(sizes))
@@ -47,6 +49,7 @@ const Add = ({token}) => {
         setImage3(false)
         setImage4(false)
         setPrice('')
+  setQuantity('')
         setSizes([])
         setBestseller('false')
       }
@@ -144,6 +147,20 @@ const Add = ({token}) => {
                     type="number" 
                     placeholder="0" 
                     required
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Quantity (stock)</label>
+                <div className="relative">
+                  <input 
+                    onChange={(e)=>setQuantity(e.target.value)} 
+                    value={quantity} 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors" 
+                    type="number" 
+                    placeholder="0" 
+                    min={0}
                   />
                 </div>
               </div>

@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { ShopContext } from '../context/ShopContext'
 import { Link } from 'react-router-dom';
 
-const ProductItem = ({id, image, name, price}) => {
+const ProductItem = ({id, image, name, price, quantity}) => {
     const {currency} = useContext(ShopContext);
 
     // Function to handle click and scroll to top
@@ -32,9 +32,14 @@ const ProductItem = ({id, image, name, price}) => {
           {name}
         </h3>
         <div className='mt-2 flex items-center justify-between'>
-          <p className='text-base sm:text-lg font-semibold text-black'>
-            {currency}{price}
-          </p>
+          <div>
+            <p className='text-base sm:text-lg font-semibold text-black'>
+              {currency}{price}
+            </p>
+            <p className={`text-xs ${quantity > 0 ? 'text-gray-600' : 'text-red-600'}`}>
+              {typeof quantity !== 'undefined' ? (quantity > 0 ? `In stock: ${quantity}` : 'Out of stock') : 'Stock: N/A'}
+            </p>
+          </div>
           <button className='hidden sm:block px-3 py-1 text-sm text-black bg-gray-100 rounded-full opacity-0 transform translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300'>
             View Details
           </button>

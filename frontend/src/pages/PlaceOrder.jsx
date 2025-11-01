@@ -12,6 +12,7 @@ const PlaceOrder = () => {
   const [useSavedAddress, setUseSavedAddress] = useState(false);
   const [showNewAddressForm, setShowNewAddressForm] = useState(false);
   const {navigate,backendUrl,token,cartItems,setCartItems,getCartAmount,getFinalAmount,delivery_fee,products,appliedCoupon} = useContext(ShopContext);
+  const { getProductData } = useContext(ShopContext);
   const [formdata,setFormData] = useState({
     firstName:'',
     lastName:'',
@@ -133,16 +134,21 @@ const PlaceOrder = () => {
 
       switch (method){
         //API calls for COD
-        case 'cod' :
+        case 'cod' : {
           const response = await axios.post(backendUrl+'/api/order/place',orderData,{headers:{token}});
           if(response.data.success){
+            // Refresh product data so stock is reflected on frontend/admin
+            try{ await getProductData(); }catch(e){}
+            // Show success message, clear cart and navigate to orders
+            toast.success('Order placed successfully');
             setCartItems({});
             navigate('/orders');
           }else{
             toast.error(response.data.message);
           }
           break;
-        case 'stripe' :
+        }
+        case 'stripe' : {
           const responseStripe = await axios.post(backendUrl+'/api/order/stripe',orderData,{headers:{token}});
           if(responseStripe.data.success){
             const {session_url} = responseStripe.data;
@@ -151,6 +157,7 @@ const PlaceOrder = () => {
             toast.error(responseStripe.data.message);
           }
           break;
+        }
 
         default :
           break;

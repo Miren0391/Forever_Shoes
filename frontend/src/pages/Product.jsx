@@ -15,8 +15,11 @@ const Product = () => {
   // Function to handle quantity change
   const handleQuantityChange = (change) => {
     setQuantity(prev => {
+      const max = productData && typeof productData.quantity !== 'undefined' ? Number(productData.quantity) : Infinity;
       const newQuantity = prev + change;
-      return newQuantity > 0 ? newQuantity : 1;
+      if (newQuantity < 1) return 1;
+      if (newQuantity > max) return max;
+      return newQuantity;
     });
   };
 
@@ -87,6 +90,7 @@ const Product = () => {
               <img src={assets.star_dull_icon} alt="" className="w-3.5" />
             </div>
             <p className='mt-5 text-3xl font-medium'>{currency}{productData.price}</p>
+            <p className='mt-1 text-sm text-gray-600'>Available: {typeof productData.quantity !== 'undefined' ? productData.quantity : 'N/A'}</p>
             <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p>
             <div className='flex flex-col gap-4 my-8'>
               <p>Select Size</p>
@@ -119,9 +123,10 @@ const Product = () => {
 
             <button 
               onClick={() => addToCart(productData._id, size, quantity)}
-              className='bg-gray-800 text-white px-8 py-3 text-sm active:bg-gray-700 rounded-lg'
+              className={`px-8 py-3 text-sm rounded-lg ${productData.quantity > 0 ? 'bg-gray-800 text-white active:bg-gray-700' : 'bg-gray-200 text-gray-500 cursor-not-allowed'}`}
+              disabled={productData.quantity <= 0}
             >
-              ADD TO CART
+              {productData.quantity > 0 ? 'ADD TO CART' : 'OUT OF STOCK'}
             </button>
             <hr className='mt-8 sm:w-4/5'/>
             <div className='text-small text-gray-500 flex flex-col gap-1 mt-4'>

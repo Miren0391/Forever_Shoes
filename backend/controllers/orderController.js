@@ -1,5 +1,6 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
+import productModel from "../models/productModel.js";
 import { sendMail } from "../config/mailer.js";
 import { buildCancelHtml } from "../utils/cancelTemplate.js";
 import { buildInvoiceHtml } from "../utils/invoiceTemplate.js";
@@ -8,7 +9,7 @@ import Stripe from "stripe";
 
 // global variables
 const currency = 'usd';
-const deliveryCharge = 10;
+const deliveryCharge = 50;
 // simple coupon config; in production, fetch from DB
 const coupons = {
     'SAVE10': { type: 'percent', value: 10 },
@@ -81,6 +82,19 @@ const placeOrder = async(req, res) => {
         }
         const newOrder = new orderModel(orderData);
         await newOrder.save();
+        // Decrement product quantities based on ordered items
+        try {
+            for (const item of items) {
+                if (!item || !item._id) continue;
+                const prod = await productModel.findById(item._id);
+                if (!prod) continue;
+                const newQty = Math.max(0, (prod.quantity || 0) - (item.quantity || 0));
+                prod.quantity = newQty;
+                await prod.save();
+            }
+        } catch (stockErr) {
+            console.log('Stock update error (COD):', stockErr.message);
+        }
         await userModel.findByIdAndUpdate(userId, {cartData:{}}); // Empty entered details after order placed
 
         // Best-effort confirmation email
@@ -169,6 +183,23 @@ const verifyStripe = async(req, res) => {
     const {orderId,success,userId} = req.body;
     try{
         if(success){
+            // Mark payment and decrement stock based on the order
+            const order = await orderModel.findById(orderId).lean();
+            if (order) {
+                try {
+                    for (const item of order.items) {
+                        if (!item || !item._id) continue;
+                        const prod = await productModel.findById(item._id);
+                        if (!prod) continue;
+                        const newQty = Math.max(0, (prod.quantity || 0) - (item.quantity || 0));
+                        prod.quantity = newQty;
+                        await prod.save();
+                    }
+                } catch (stockErr) {
+                    console.log('Stock update error (Stripe verify):', stockErr.message);
+                }
+            }
+
             await orderModel.findByIdAndUpdate(orderId, { payment:true });
             await userModel.findByIdAndUpdate(userId, {cartData:{}});
 
@@ -304,6 +335,19 @@ const cancelOrder = async (req, res) => {
 
         order.status = 'Cancelled';
         await order.save();
+
+        // Restock items since the order was cancelled
+        try {
+            for (const item of order.items) {
+                if (!item || !item._id) continue;
+                const prod = await productModel.findById(item._id);
+                if (!prod) continue;
+                prod.quantity = (prod.quantity || 0) + (item.quantity || 0);
+                await prod.save();
+            }
+        } catch (restockErr) {
+            console.log('Restock error (cancelOrder):', restockErr.message);
+        }
 
         // Send cancellation email (best-effort)
         try {

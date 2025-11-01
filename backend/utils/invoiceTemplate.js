@@ -37,7 +37,7 @@ export function buildInvoiceHtml({ order, user }) {
         <tbody>
           ${itemsRows}
           <tr style="font-weight:bold; background:#e6f0ff;">
-            <td colspan="3" style="padding:12px 15px; border:1px solid #ddd; text-align:right;">Grand Total</td>
+            <td colspan="3" style="padding:12px 15px; border:1px solid #ddd; text-align:right;">Grand Total(Delivery Charges Included)</td>
             <td style="padding:12px 15px; border:1px solid #ddd; text-align:right;">₹${total.toFixed(2)} ${currency}</td>
           </tr>
         </tbody>

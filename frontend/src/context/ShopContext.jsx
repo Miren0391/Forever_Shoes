@@ -8,7 +8,7 @@ export const ShopContext = createContext();
 const ShopContextProvider = (props) => {
 
     const currency = '₹';
-    const delivery_fee = 10;
+    const delivery_fee = 50;
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const adminToken = "eyJhbGciOiJIUzI1NiJ9.YWRtaW5AZ21haWwuY29tQWRtaW5fMTIzNA.FmXGnJVSxdW-Y-rMtBnbkpvvtZP22xKzlZmDIlSSTzA"
 
@@ -36,7 +36,9 @@ const ShopContextProvider = (props) => {
             cartData[itemId] = {};
             cartData[itemId][size] = quantity;
         }
-        setCartItems(cartData);
+    setCartItems(cartData);
+    // Notify user that product was added to cart
+    toast.success('Product added to cart');
 
         //sending cart data to database
         if(token){
@@ -66,8 +68,31 @@ const ShopContextProvider = (props) => {
 
     const updateQuantity = async (itemId, size, quantity) =>{
         let cartData = structuredClone(cartItems);
-        cartData[itemId][size] = quantity;
-        setCartItems(cartData);
+
+        if (quantity === 0) {
+            // remove the size entry
+            if (cartData[itemId] && cartData[itemId][size]) {
+                delete cartData[itemId][size];
+            }
+            // if no sizes left for this product, remove the product entry
+            if (cartData[itemId] && Object.keys(cartData[itemId]).length === 0) {
+                delete cartData[itemId];
+            }
+
+            setCartItems(cartData);
+
+            // show removal toast with product name when available
+            try{
+                const product = products.find((p) => p._id === itemId);
+                const name = product ? product.name : 'Product';
+                toast.success(`${name} removed from cart`);
+            }catch(e){}
+        } else {
+            // update quantity normally
+            cartData[itemId] = cartData[itemId] || {};
+            cartData[itemId][size] = quantity;
+            setCartItems(cartData);
+        }
 
         //updating cart data in database
         if(token){
@@ -211,6 +236,7 @@ const ShopContextProvider = (props) => {
     const value = {
         products, currency, delivery_fee, 
         cartItems, addToCart, getCartCount, setCartItems, updateQuantity, getCartAmount, getFinalAmount, navigate,
+        getProductData,
         backendUrl, 
         token, setToken, user, setUser,
         appliedCoupon, applyCoupon, removeCoupon
