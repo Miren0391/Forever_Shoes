@@ -71,11 +71,11 @@ const Footer = () => {
                   Shipping Policy
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
                   Returns & Exchanges
                 </a>
-              </li>
+              </li> */}
               <li>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
                   FAQs

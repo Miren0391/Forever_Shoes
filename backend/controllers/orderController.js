@@ -5,7 +5,7 @@ import { sendMail } from "../config/mailer.js";
 import { buildCancelHtml } from "../utils/cancelTemplate.js";
 import { buildInvoiceHtml } from "../utils/invoiceTemplate.js";
 import { buildDeliveryHtml } from "../utils/deliveryTemplate.js";
-import Stripe from "stripe";
+// import Stripe from "stripe";
 
 // global variables
 const currency = 'usd';
@@ -19,7 +19,7 @@ const coupons = {
 };
 
 //gateway initlize
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Validate coupon and compute pricing breakdown
 const validateCoupon = async (req, res) => {

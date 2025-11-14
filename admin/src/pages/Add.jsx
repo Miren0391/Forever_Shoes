@@ -27,7 +27,7 @@ const Add = ({token}) => {
       formData.append('name',name)
       formData.append('description',description)
       formData.append('price',price)
-  formData.append('quantity',quantity)
+      formData.append('quantity',quantity)
       formData.append('category',category)
       formData.append('bestseller',bestseller)
       formData.append('sizes',JSON.stringify(sizes))
@@ -49,7 +49,7 @@ const Add = ({token}) => {
         setImage3(false)
         setImage4(false)
         setPrice('')
-  setQuantity('')
+        setQuantity('')
         setSizes([])
         setBestseller('false')
       }

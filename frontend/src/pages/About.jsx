@@ -27,7 +27,7 @@ const About = () => {
       <div className='flex flex-col md:flex-row text-sm mb-20 rounded-xl'>
         <div className='border px-10 md:px-16 py-8 sm:py-15 flex flex-col gap-5'>
           <b>Quality Assurance:</b>
-          <p className='text-gray-600'>Crafted with care and precision, our clothing combines premium materials and exceptional craftsmanship to deliver timeless quality you can trust.</p>
+          <p className='text-gray-600'>Crafted with care and precision, our shoes combines premium materials and exceptional craftsmanship to deliver timeless quality you can trust.</p>
         </div>
         <div className='border px-10 md:px-16 py-8 sm:py-15 flex flex-col gap-5'>
           <b>Convenience:</b>
@@ -35,7 +35,7 @@ const About = () => {
         </div>
         <div className='border px-10 md:px-16 py-8 sm:py-15 flex flex-col gap-5'>
           <b>Exceptional customer Service:</b>
-          <p className='text-gray-600'>We’re dedicated to providing a seamless shopping experience, with personalized support and prompt service to ensure your satisfaction every step of the way.</p>
+          <p className='text-gray-600'>We’re dedicated to providing a seamless shopping experience, with personalized support and service to ensure your satisfaction every step of the way.</p>
         </div>
       </div>
 
